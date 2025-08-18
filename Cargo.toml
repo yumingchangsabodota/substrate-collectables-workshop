@@ -5,7 +5,7 @@ description = "An NFT Marketplace for Kitties"
 authors = ["Shawn Tabrizi <shawntabrizi@gmail.com>"]
 homepage = "https://www.shawntabrizi.com/substrate-collectables-workshop/"
 repository = "https://github.com/shawntabrizi/substrate-collectables-workshop"
-edition = "2021"
+edition = "2024"
 publish = false
 
 [package.metadata.docs.rs]
