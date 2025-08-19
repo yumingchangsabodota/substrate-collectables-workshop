@@ -36,7 +36,16 @@ impl<T: Config> Pallet<T> {
 		to_owned.try_push(kitty_id).map_err(|_| Error::<T>::TooManyOwned)?;
 
 		let mut from_owned = KittiesOwned::<T>::get(&from);
+		if let Some(ind) = from_owned.iter().position(|&id| id == kitty_id) {
+			from_owned.swap_remove(ind);
+		} else {
+			return Err(Error::<T>::NoKitty.into())
+		}
 
+
+		Kitties::<T>::insert(kitty_id, kitty);
+		KittiesOwned::<T>::insert(&to, to_owned);
+		KittiesOwned::<T>::insert(&from, from_owned);
 
 
 		Self::deposit_event(Event::<T>::Transferred { from, to, kitty_id });
