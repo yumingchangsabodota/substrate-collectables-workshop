@@ -11,6 +11,8 @@
 // This flag tells rust to only run this file when running `cargo test`.
 #![cfg(test)]
 
+use std::alloc::System;
+
 use crate as pallet_kitties;
 use crate::*;
 use frame::deps::frame_support::runtime;
@@ -30,10 +32,7 @@ const ALICE: u64 = 1;
 const BOB: u64 = 2;
 
 #[allow(unused)]
-const DEFAULT_KITTY: Kitty<TestRuntime> = Kitty{
-	dna: [0u8; 32],
-	owner: 0,
-};
+const DEFAULT_KITTY: Kitty<TestRuntime> = Kitty { dna: [0u8; 32], owner: 0 };
 
 #[runtime]
 mod runtime {
@@ -117,5 +116,20 @@ fn system_and_balances_work() {
 		// We often need to add some balance to a user to test features which needs tokens.
 		assert_ok!(PalletBalances::mint_into(&ALICE, 100));
 		assert_ok!(PalletBalances::mint_into(&BOB, 100));
+	});
+}
+
+#[test]
+fn transfer_emits_event() {
+	new_test_ext().execute_with(|| {
+		System::set_block_number(1);
+
+		assert_ok!(PalletKitties::create_kitty(RuntimeOrigin::signed(ALICE)));
+
+		let kitty_id = Kitties::<TestRuntime>::iter_keys().collect::<Vec<_>>()[0];
+		assert_ok!(PalletKitties::transfer(RuntimeOrigin::signed(ALICE), BOB, kitty_id));
+		System::assert_last_event(
+			Event::<TestRuntime>::Transferred { from: ALICE, to: BOB, kitty_id }.into(),
+		);
 	});
 }
