@@ -84,7 +84,10 @@ use super::*;
 			Ok(())
 		}
 
-		pub fn set_price(origin: OriginFor<T>, kitty_id: [u8; 32], new_price: Option<BalanceOf<T>>) -> DispatchResult {
+		pub fn set_price(
+			origin: OriginFor<T>, 
+			kitty_id: [u8; 32], 
+			new_price: Option<BalanceOf<T>>) -> DispatchResult {
 			let who = ensure_signed(origin)?;
 			Self::do_set_price(who, kitty_id, new_price)?;
 			Ok(())
