@@ -10,7 +10,9 @@ use frame::traits::fungible::{ Inspect, Mutate};
 
 #[frame::pallet(dev_mode)]
 pub mod pallet {
-	use super::*;
+	use frame::runtime::types_common::AccountId;
+
+use super::*;
 
 	#[pallet::pallet]
 	pub struct Pallet<T>(core::marker::PhantomData<T>);
@@ -27,6 +29,7 @@ pub mod pallet {
 	pub struct Kitty<T: Config> {
 		pub dna: [u8; 32],
 		pub owner: T::AccountId,
+		pub price: Option<BalanceOf<T>>,
 	}
 
 	#[pallet::storage]
@@ -41,6 +44,8 @@ pub mod pallet {
 		Value = BoundedVec<[u8; 32], ConstU32<100>>,
 		QueryKind = ValueQuery,
 	>;
+
+	pub type BalanceOf<T> = <<T as Config>::NativeBalance as Inspect<<T as frame_system::Config>::AccountId>>::Balance;
 
 	#[pallet::event]
 	#[pallet::generate_deposit(pub(super) fn deposit_event)]
