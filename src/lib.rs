@@ -64,6 +64,8 @@ use super::*;
 		TransferToSelf,
 		NoKitty,
 		NotOwner,
+		NotForSale,
+		MaxPriceTooLow,
 	}
 
 	#[pallet::call]
